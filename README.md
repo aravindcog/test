@@ -1,6 +1,8 @@
 ## Step 1 - Questions 1 to 7 
 ## Step 2 - Questions 8 to 11
 ## Step 3 - Questions 12 to 17  
+
+### Step 1  
 **Question 1**  
 Create inventory file with below content  
 
@@ -171,5 +173,89 @@ $  cat myhosts.yml
       dest: /etc/myhost       
     when: inventory_hostname in groups['dev']
  $ 
+</pre>  
+
+**Question 9**  
+Install httpd, firewalld, start services, enable firewall service for httpd.  
+Create a playbook to install httpd and firewall.  
+Download the template to /home/greg/ansible folder.  
+
+Download template
+<pre>
+$ pwd 
+/home/greg/ansible 
+$ wget http://example.com/template.j2 -O template.j2 
+</pre> 
+
+Create apache role in roles directory 
+<pre>
+$ mkdir /home/greg/ansible/roles 
+$ cd /home/greg/ansible/roles 
+$ pwd 
+/home/greg/ansible/roles 
+$ ansible-galaxy init apache
+</pre> 
+
+Update template and move into roles' template directory  
+<pre>
+$ pwd 
+/home/greg/ansible 
+$ mv template.j2 apache/templates
+$ echo '{{ ansible_hostname }} {{ ansible_default_ipv4['address'] }}' >> apache/templates/template/j2 
 </pre>
+
+Create apache deployment yaml file  
+<pre>
+$ pwd
+/home/greg/ansible 
+$ cat apache_role.yml 
+---
+- name: apache_role.yml
+  hosts: dev, test 
+  roles:
+  - apache 
+$ 
+</pre> 
+
+Create tasks in apache role  
+<pre>
+$ pwd 
+/home/greg/ansible 
+$ cd roles/apache/tasks
+$ cat main.yml
+# tasks for apache 
+- name: install httpd and firewalld
+  yum: 
+    name: "{{ item }}" 
+    state: latest 
+  loop:
+  - httpd
+  - firewalld 
+    
+- name: Enable services 
+  service:
+    name: "{{ item }}" 
+    state: started 
+    enabled: yes 
+  loop:
+  - httpd 
+  - firewalld 
+  
+- name: Enable firewall rule 
+  firewalld:
+    immediate: yes 
+    permanent: yes 
+    service: http
+    state: enabled 
+    
+- name: create index.html 
+  copy: 
+    src: template.j2 
+    dest: /var/www/html/index.html 
+$
+</pre>
+
+
+
+
 
