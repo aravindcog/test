@@ -147,3 +147,29 @@ Confirm new vault password:
 Rekey successful 
 $ 
 </pre>
+
+### Step 2 
+**Question 8**  
+Download the hostfile template from the link and complete the template so that it creates and entry in dev group.  
+The contents on /etc/hosts should copied to /etc/myhosts.  
+
+<pre>
+$ cat hosts.j2  
+{% for host in groups[‘all’] %}  
+{{hostvars[host][‘ansible_facts’][‘default_ipv4’][‘address’]}} {{hostvars[host][‘ansible_facts’][‘fqdn’]}} {{hostvars[host][‘ansible_facts’][‘hostname’]}}  
+{% endfor %}  
+$  
+
+$  cat myhosts.yml  
+--- 
+- name: copy content using template   
+  hosts:  all   
+  tasks:     
+  - name: copy using template       
+    template:         
+      src:  hosts.j2         
+      dest: /etc/myhost       
+    when: inventory_hostname in groups['dev']
+ $ 
+</pre>
+
