@@ -293,4 +293,32 @@ $ cat configure_time.yml
 $ 
 </pre>
 
+**Question 11** 
+Create a playbook to replace the contents of the file /etc/issue on particular host groups (test, prod, dev).  
+Replace with ansible_fqdn ansible_ipv4.address ansible_hostname.  
 
+<pre>
+$ cat issue.yml 
+--- 
+- name: copy content   
+  hosts:  all   
+  tasks:     
+  - name: copy to dev server       
+    copy:         
+      content:  Developmenet server         
+      dest: /etc/issue       
+    when: inventory_hostname in groups['dev']     
+    
+  - name: copy to test server       
+    copy:         
+      content:  Test server      
+      dest: /etc/issue       
+    when: inventory_hostname in groups['test']     
+    
+  - name: copy to prod server       
+    copy:         
+      content:  production server         
+      dest: /etc/issue       
+    when: inventory_hostname in groups['prod'] 
+$   
+</pre>
