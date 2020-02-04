@@ -255,7 +255,7 @@ $ cat main.yml
 $
 </pre>
 
-**Question 10** 
+**Question 10**  
 Create a playbook  (timesync.yml) to use system roles.  
 Set hostname to 172.25.254.254.  
 Set timesync_ntp_provider to chrony.  
@@ -293,9 +293,8 @@ $ cat configure_time.yml
 $ 
 </pre>
 
-**Question 11** 
+**Question 11**  
 Create a playbook to replace the contents of the file /etc/issue on particular host groups (test, prod, dev).  
-Replace with ansible_fqdn ansible_ipv4.address ansible_hostname.  
 
 <pre>
 $ cat issue.yml 
