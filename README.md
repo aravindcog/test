@@ -255,7 +255,42 @@ $ cat main.yml
 $
 </pre>
 
+**Question 10** 
+Create a playbook  (timesync.yml) to use system roles.  
+Set hostname to 172.25.254.254.  
+Set timesync_ntp_provider to chrony.  
 
+Enable repo 
+<pre>
+$ sudo yum-config-manager --enable rhel-7-server-extras-rpms
+</pre>
 
+Install the system roles  
+<pre>
+$ sudo yum install rhel-system-roles
+</pre>
+
+Verify the roles  
+<pre>
+$ ansible-galaxy list
+$ cd /usr/share/ansible/roles/rhel-system-roles.timesync 
+$ ls 
+</pre>
+
+Create yaml file  
+<pre>
+$ cat configure_time.yml 
+--- 
+- name: time sync   
+  hosts:  all   
+  vars:     
+    timesync_ntp_servers:        
+      - hostname: 172.25.254.254         
+        iburst: yes     
+    timesync_ntp_provider: chrony        
+  roles:     
+    - /usr/share/ansible/roles/rhel-system-roles.timesync
+$ 
+</pre>
 
 
