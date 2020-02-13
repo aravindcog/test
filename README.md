@@ -321,3 +321,78 @@ $ cat issue.yml
     when: inventory_hostname in groups['prod'] 
 $   
 </pre>
+
+### Step 3
+**Question 12**  
+Create packages.yml playbook.  
+Install php and mariadb in dev hosts.  
+Install 'Development Tools' in prod hosts.  
+Update all packages to the latest in dev hosts.  
+
+<pre>
+$ cat package.yml 
+--- 
+- name: install php and maria   
+  hosts:  all   
+  tasks:     
+  - name: install package       
+    yum:         
+      name: "{{item}}"         
+      state: present       
+    when: inventory_hostname in groups['dev']       
+    loop: 
+      - php 
+      - mariadb
+  - name: group install 
+    yum: 
+      name: '@Development Tools' 
+      state: present 
+    when: inventory_hostname in groups['prod']
+  - name: update 
+    yum: 
+      name: '*' 
+      state: latest 
+    when: inventory_hostname in groups['dev']
+</pre>
+
+**Question 13**  
+Create a directory /devweb and give group permission as devops and set gid to group.  
+Create a file index.html under /devweb.  
+Create link to /devweb/index.html to /var/www/html/index.html.  
+Copy the content 'Development" to /devweb/index.html.  
+
+<pre>
+$ cat webcontent.yml 
+---
+- name: webcontent.yml 
+  hosts: all
+  tasks:
+  - name: directory creation 
+    file: 
+      path: /devweb
+      state: directory 
+      group: devops 
+      mode: u=rwx,g=rwx,o=rx,g+s 
+      setype: httpd_sys_content_t 
+      recurse: yes 
+  - name: copy content 
+    copy: 
+      content: Development server 
+      dest: /devweb/index.html 
+      setype: httpd_sys_content_t 
+    when: inventory_hostname in groups['dev']
+  - name: link file 
+    file: 
+      src: /devweb
+      dest: /var/www/html/devweb
+      state: link
+</pre>
+
+**Question 14**  
+
+**Question 15**  
+
+**Question 16**  
+
+**Question 17**  
+
